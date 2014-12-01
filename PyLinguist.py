@@ -4,7 +4,9 @@
 import goslate
 import xml.etree.ElementTree as ET
 import argparse
-import sys
+import time
+import os.path
+import shutil
 
 
 class PyLinguist(object):
@@ -31,10 +33,7 @@ class PyLinguist(object):
     def translate(self, target_lang):
         """use goslate to translate from source_lang to target_lang
 
-        :text: text to translate
-        :source_lang: source language, ex. "en"
         :target_lang: target language, ex. "de"
-        :returns: translated text
 
         """
         root = self.tree.getroot()
@@ -69,21 +68,37 @@ class PyLinguist(object):
             print(key, val)
 
 
+def generateName(filename):
+    """Generate backup filename
+
+    :filename: the input filename
+    :returns: the output filename
+    """
+    dirname = os.path.dirname(filename)
+    basename = os.path.basename(filename)
+    noext = os.path.splitext(basename)[0]
+    genName = noext + "_backup" + time.strftime("%H%M.ts")
+    return os.path.join(dirname, genName)
+
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Translate Qt tf file')
-    parser.add_argument('-i', dest='inputFile',
-                        help='specify the input filename')
-    parser.add_argument('-o', dest='outputFile',
-                        help='specify the output filename')
-    parser.add_argument('-t', dest='target', default='en',
-                        help='specify the target language')
+    parser.add_argument('filename', metavar=".tsfile", type=str,
+                        help='file to be translate')
+    parser.add_argument('lang', metavar="lang", type=str,
+                        help='target translate language')
     args = parser.parse_args()
 
-    if not args.inputFile or not args.outputFile:
-        parser.print_help()
-        sys.exit(1)
+    backupFile = generateName(args.filename)
+    print("Translate file: " + args.filename)
+    print("Target Language: " + args.lang)
+    print("Backup file: copy to " + backupFile)
 
+    shutil.copy(args.filename, backupFile)
+
+    print("Start Translate: ")
     trans = PyLinguist()
-    trans.parseXML(args.inputFile)
-    trans.translate(target_lang=args.target)
-    trans.writeXML(args.outputFile)
+    trans.parseXML(args.filename)
+    trans.translate(target_lang=args.lang)
+    trans.writeXML(args.filename)
