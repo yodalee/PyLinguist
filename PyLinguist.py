@@ -30,10 +30,11 @@ class PyLinguist(object):
             if isTranslated and source not in self.maplist:
                 self.maplist[source] = translation
 
-    def translate(self, target_lang):
+    def translate(self, target_lang, verbose):
         """use goslate to translate from source_lang to target_lang
 
         :target_lang: target language, ex. "de"
+        :verbose: print out translate data
 
         """
         root = self.tree.getroot()
@@ -44,16 +45,20 @@ class PyLinguist(object):
                 if source in self.maplist:
                     msg.find('translation').text = self.maplist[source]
                     del msg.find('translation').attrib['type']
+                    if verbose:
+                        print("Repeat: \"" + source + "\" : \"" + self.maplist[source] + "\"")
                 else:
-                    # print(source)
-                    # print(target_lang)
                     try:
                         text = self.gs.translate(source, target_lang)
+
                         msg.find('translation').text = text
                         self.maplist[source] = text
                         del msg.find('translation').attrib['type']
+                        if verbose:
+                            print("Translate: \"" + source + "\" into \"" + text + "\"")
                     except Exception:
-                        pass
+                        if verbose:
+                            print("Error: " + source + " fail")
 
         return self.gs.translate(source, target_lang)
 
@@ -87,6 +92,8 @@ if __name__ == '__main__':
                         help='file to be translate')
     parser.add_argument('lang', metavar="lang", type=str,
                         help='target translate language')
+    parser.add_argument('-v', dest='verbose', action='store_true',
+                        default=False, help='print out data')
     parser.add_argument('-B', dest='backup', action='store_false',
                         default=True, help='close automatic backup')
     args = parser.parse_args()
@@ -102,5 +109,5 @@ if __name__ == '__main__':
     print("Start Translate: ")
     trans = PyLinguist()
     trans.parseXML(args.filename)
-    trans.translate(target_lang=args.lang)
+    trans.translate(target_lang=args.lang, verbose=args.verbose)
     trans.writeXML(args.filename)
