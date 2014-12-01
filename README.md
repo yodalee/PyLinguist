@@ -8,8 +8,12 @@ Can be installed by pip:
 $ pip install goslate  
 
 ## Usage
-python PyLinguist.py -i input\_ts\_file -o output\_ts\_file -t target\_language  
-ex: python PyLinguist.py -i en.ts -o de.ts -t de  
+python PyLinguist.py input\_ts\_file target\_language  
+ex: python PyLinguist.py en.ts de  
+
+available option:  
+-B: close automatic backup  
+-v: open verbose translate, result will be print out  
 
 ## Language Support
 The language that google translate supportted can be found at:  
