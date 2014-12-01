@@ -62,11 +62,11 @@ class PyLinguist(object):
         """Write tree object into file"""
         self.tree.write(filename, xml_declaration=True, encoding="UTF-8", method="html")
 
-    def print(self):
+    def printTranslatedMap(self):
         """print out maplist
         """
-        for item in self.maplist:
-            print(item)
+        for key, val in self.maplist.items():
+            print(key, val)
 
 
 if __name__ == '__main__':
