@@ -7,12 +7,15 @@ import argparse
 import time
 import os.path
 import shutil
+import re
 
 
 class PyLinguist(object):
     """PyLinguist: wrap of goslate and XML parser"""
     gs = goslate.Goslate()
     tree = None
+
+    refMarkReg = "\s*\&\s*"
 
     def __init__(self):
         self.maplist = {}
@@ -50,6 +53,8 @@ class PyLinguist(object):
                 else:
                     try:
                         text = self.gs.translate(source, target_lang)
+                        text = re.sub(self.refMarkReg, "&", text)
+                        text = text.replace("% ", "%")
 
                         msg.find('translation').text = text
                         self.maplist[source] = text
