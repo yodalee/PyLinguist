@@ -81,21 +81,23 @@ def generateName(filename):
     return os.path.join(dirname, genName)
 
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Translate Qt tf file')
     parser.add_argument('filename', metavar=".tsfile", type=str,
                         help='file to be translate')
     parser.add_argument('lang', metavar="lang", type=str,
                         help='target translate language')
+    parser.add_argument('-B', dest='backup', action='store_false',
+                        default=True, help='close automatic backup')
     args = parser.parse_args()
 
-    backupFile = generateName(args.filename)
     print("Translate file: " + args.filename)
     print("Target Language: " + args.lang)
-    print("Backup file: copy to " + backupFile)
 
-    shutil.copy(args.filename, backupFile)
+    if args.backup:
+        backupFile = generateName(args.filename)
+        print("Backup file: copy to " + backupFile)
+        shutil.copy(args.filename, backupFile)
 
     print("Start Translate: ")
     trans = PyLinguist()
