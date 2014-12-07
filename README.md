@@ -17,7 +17,7 @@ available option:
 
 ## Language Support
 The language that google translate supportted can be found at:  
-https://cloud.google.com/translate/v2/using_rest#language-params
+https://cloud.google.com/translate/v2/using\_rest#language-params
 
 ## Bugs
 * Please report bugs to the Github issue tracker.

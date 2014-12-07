@@ -21,6 +21,16 @@ class PyLinguist(object):
         self.maplist = {}
         self.tree = None
 
+    def processText(self, text):
+        """process return text, do something like:
+        Replace fullwidth &% to halfwidth"""
+
+        re.sub(self.refMarkReg, "&", text)
+        text = text.replace("％", "%")
+        text = text.replace("＆", "&")
+        text = text.replace("% ", "%")
+        return text
+
     def parseXML(self, filename):
         """Parse input XML file and parse into list"""
         self.tree = ET.parse(filename)
@@ -53,8 +63,7 @@ class PyLinguist(object):
                 else:
                     try:
                         text = self.gs.translate(source, target_lang)
-                        text = re.sub(self.refMarkReg, "&", text)
-                        text = text.replace("% ", "%")
+                        text = self.processText(text)
 
                         msg.find('translation').text = text
                         self.maplist[source] = text
